@@ -5,7 +5,6 @@ export default class ChatBar extends Component {
 
   render() {
     console.log("Rendering <Chatbar/>");
-    console.log(this.props.user)
     return (
       <footer className="chatbar">
         <input
