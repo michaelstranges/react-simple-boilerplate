@@ -2,6 +2,11 @@ import React, {Component} from 'react';
 
 export default class ChatBar extends Component {
 
+handleKeyPress = (evt) => {
+  if (evt.key === "Enter") {
+    this.props._handleKeyPress(evt.target.value)
+  }
+}
 
   render() {
     console.log("Rendering <Chatbar/>");
@@ -16,6 +21,7 @@ export default class ChatBar extends Component {
         <input
           className="chatbar-message"
           placeholder="Type a message and hit ENTER"
+          onKeyPress={this.handleKeyPress}
         />
       </footer>
     );
