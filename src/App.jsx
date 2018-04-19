@@ -7,7 +7,7 @@ import ChatBar from "./ChatBar.jsx";
 class App extends Component {
   constructor(props){
     super(props); //steal some props from Component
-
+    this.socket = ""
     this.state = {
       currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
       messages: [
@@ -24,9 +24,13 @@ class App extends Component {
   }
 
   componentDidMount() { //PULL OUT AND CREATE A FUNCTION!
-  this.addNewMessage();
-  console.log("componentDidMount <App />");
-}
+    this.addNewMessage();
+
+    this.socket = new WebSocket("ws://localhost:3001/");
+    console.log("---Connected to Server---")
+
+    console.log("componentDidMount <App />");
+  }
 
   addNewMessage = () => {
     console.log("Simulating incoming message");
@@ -41,8 +45,16 @@ class App extends Component {
 
   _handleKeyPress = evt => {
     const newMessage = {username: this.state.currentUser.name, content: evt};
-    const messages = this.state.messages.concat(newMessage)
-    this.setState({messages: messages})
+    //const messages = this.state.messages.concat(newMessage)
+    //send new message to server rather than appending it over
+
+
+      //this.socket.send("AAAA")
+      this.socket.send(JSON.stringify(newMessage), "CLIENT");
+
+
+
+    //this.setState({messages: messages})
   }
 
   render() {
