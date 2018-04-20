@@ -12,7 +12,7 @@ handleKeyPress = (evt) => {
 handleChange = (evt) => {
   if (evt.key === "Enter") {
     this.props._handleChange(evt.target.value)
-    console.log(evt.target, "--hopefully username--")
+    console.log(evt.target, "--username--")
   }
 }
 

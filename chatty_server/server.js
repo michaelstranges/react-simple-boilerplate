@@ -27,10 +27,23 @@ wss.on('connection', (ws) => {
   ws.on('message', function incoming(data) {
 
     incomingMessage = JSON.parse(data)
-    console.log(`User ${incomingMessage.username} said ${incomingMessage.content}`, "---SERVER---");
-    incomingMessage.id = uuidv1(); //add id to incomingmessage obj
-    returningMessage = JSON.stringify(incomingMessage);
-    //console.log(wss.clients, "---clients---")
+
+    switch(incomingMessage.type){
+      case "postMessage":
+        console.log(`User ${incomingMessage.username} said ${incomingMessage.content}`, "---SERVER---");
+        incomingMessage.id = uuidv1(); //add id to incomingmessage obj
+        incomingMessage.type = "incomingMessage";
+        returningMessage = JSON.stringify(incomingMessage);
+        //console.log(wss.clients, "---clients---")
+        break;
+
+      case "postNotification":
+        let notification = {type: "incomingNotification", note: `${incomingMessage.oldUser} changed name to ${incomingMessage.username}`}
+
+        returningMessage = JSON.stringify(notification);
+
+        break;
+    }
 
     wss.clients.forEach(function each(client) {
       if(client.readyState === SocketServer.OPEN){
