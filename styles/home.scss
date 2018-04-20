@@ -14,7 +14,7 @@ h1 {
     }
 
     .chatbar {
-      background: tomato;
+      background: #00bbff;
       border-top: 1px solid black;
       bottom: 0;
       display: flex;
@@ -69,7 +69,7 @@ h1 {
     }
 
     .navbar {
-      background: tomato;
+      background: #00bbff;
       border-bottom: 1px solid black;
       height: 60px;
       left: 0;
@@ -77,6 +77,17 @@ h1 {
       position: fixed;
       right: 0;
       top: 0;
+    }
+
+    .notification-content {
+      margin-left: 15px
+    }
+
+    .usersOnline {
+      float: right;
+      display: block;
+      position: relative;
+      font-size: 20px
     }
 
     .navbar-brand {

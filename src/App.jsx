@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Message from "./Message.jsx";
 import MessageList from "./MessageList.jsx";
 import ChatBar from "./ChatBar.jsx";
+import NavBar from "./navbar.jsx";
 
 
 class App extends Component {
@@ -10,69 +11,42 @@ class App extends Component {
     this.socket = ""
 
     this.state = {
-      notification: [],
+      online: "",
       currentUser:{name: 'Anonymous'},
       messages: []
     }
-
-
-    // this.state = {
-    //   currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-    //   messages: [
-    //     {
-    //       username: "Bob",
-    //       content: "Has anyone seen my marbles?",
-    //     },
-    //     {
-    //       username: "Anonymous",
-    //       content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-    //     }
-    //   ]
-    // }
   }
 
-  componentDidMount() { //PULL OUT AND CREATE A FUNCTION!
+  componentDidMount() {
+
     this.addNewMessage();
-
     this.socket = new WebSocket("ws://localhost:3001/");
-console.log("---Connected to Server---")
-
-console.log("componentDidMount <App />");
-
     this.socket.onmessage = (event) => {
-        const newData = JSON.parse(event.data);
+      const newData = JSON.parse(event.data);
 
-        switch(newData.type){
-          case "incomingMessage":
-            const otherMessage = {type: newData.type, username: newData.username, content: newData.content};
-            const thisUser = {name: newData.username}
-            const nextMessage = this.state.messages.concat(otherMessage);
-            this.setState({messages: nextMessage, currentUser: thisUser})
-            break;
-// I have a notification coming in, send to state? then to message list?
-          case "incomingNotification":
+      switch(newData.type){
+        case "incomingMessage":
+          const otherMessage = {type: newData.type, username: newData.username, content: newData.content};
+          const thisUser = {name: newData.username}
+          const nextMessage = this.state.messages.concat(otherMessage);
+          this.setState({messages: nextMessage, currentUser: thisUser})
+          break;
 
-            const newNotification = {type: newData.type, note: newData.note}
+        case "incomingNotification":
 
-console.log(newNotification);
+          const newNotification = {type: newData.type, note: newData.note}
+          const arrayNotification = this.state.messages.concat(newNotification);
+          this.setState({messages:arrayNotification})
+          break;
 
-            const arrayNotification = this.state.messages.concat(newNotification);
+        case "users":
+          this.setState({online: newData.count})
+          break;
 
-console.log(arrayNotification, "----notify----")
-
-            this.setState({messages:arrayNotification})
-            //console.log(newData.note, "---the notification---")
-            break;
-
-          default:
-
-          throw new Error("Unknown event type " + data.type);
-
-
-        }
-
-
+        default:
+        throw new Error("Unknown event type ");
       }
+    }
   }
 
 //might not even need this!
@@ -95,20 +69,16 @@ console.log(arrayNotification, "----notify----")
   }
 
   _handleChange = evt => {
-    console.log("---handleChange---")
-    console.log(evt)
     let oldName = this.state.currentUser.name;
     this.setState({currentUser:{name: evt}});
     this.socket.send(JSON.stringify({type: "postNotification", username: evt, oldUser: oldName}))
   }
 
   render() {
-    console.log("Rendering <App/>")
-    console.log(this.state.notification);
-    console.log(this.state.messages);
     return (
 
       <div>
+        <NavBar usersOnline={this.state.online} />
         <MessageList theMessages={this.state.messages} />
         <ChatBar
           user={this.state.currentUser.name}
