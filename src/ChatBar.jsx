@@ -5,19 +5,16 @@ export default class ChatBar extends Component {
 handleKeyPress = (evt) => {
   if (evt.key === "Enter") {
     this.props._handleKeyPress(evt.target.value)
-    console.log(evt.target, "--chatbar--")
   }
 }
 
 handleChange = (evt) => {
   if (evt.key === "Enter") {
     this.props._handleChange(evt.target.value)
-    console.log(evt.target, "--username--")
   }
 }
 
   render() {
-    console.log("Rendering <Chatbar/>");
     return (
       <footer className="chatbar">
         <input

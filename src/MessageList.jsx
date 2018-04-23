@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import Message from "./Message.jsx";
 
-//UserNotify coming in
-//theMessage coming in
-
 export default class MessageList extends Component {
   render() {
 

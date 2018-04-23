@@ -42,13 +42,13 @@ wss.on('connection', (ws) => {
         returningMessage = JSON.stringify(incomingMessage);
         //console.log(wss.clients, "---clients---")
         break;
-
+//case to handle post notifcations when received on the server side.
       case "postNotification":
         let notification = {type: "incomingNotification", online: wss.clients.size, note: `${incomingMessage.oldUser} changed name to ${incomingMessage.username}`}
         returningMessage = JSON.stringify(notification);
         break;
     }
-
+//broadcasting message to send to all child nodes
     wss.clients.forEach(function each(client) {
       if(client.readyState === SocketServer.OPEN){
         client.send(returningMessage);

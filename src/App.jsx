@@ -9,7 +9,7 @@ class App extends Component {
   constructor(props){
     super(props); //steal some props from Component
     this.socket = ""
-
+//Sets state of the App component
     this.state = {
       online: "",
       currentUser:{name: 'Anonymous'},
@@ -25,20 +25,21 @@ class App extends Component {
       const newData = JSON.parse(event.data);
 
       switch(newData.type){
+//case when returning an incoming message
         case "incomingMessage":
           const otherMessage = {type: newData.type, username: newData.username, content: newData.content};
           const thisUser = {name: newData.username}
           const nextMessage = this.state.messages.concat(otherMessage);
           this.setState({messages: nextMessage, currentUser: thisUser})
           break;
-
+//case when return message is an incoming notification
         case "incomingNotification":
 
           const newNotification = {type: newData.type, note: newData.note}
           const arrayNotification = this.state.messages.concat(newNotification);
           this.setState({messages:arrayNotification})
           break;
-
+//case when returning data about users online
         case "users":
           this.setState({online: newData.count})
           break;
@@ -49,14 +50,12 @@ class App extends Component {
     }
   }
 
-//might not even need this!
+//This is just a first test message to ensure system is working
   addNewMessage = () => {
-    console.log("Simulating incoming message");
-    // Add a new message to the list of messages in the data store
-    const newMessage = {type: "incomingMessage", username: "Michelle", content: "Hello there!"}; //?
+    const newMessage = {type: "incomingMessage", username: "Chatty Cathy", content: "Welcome to ChattyApp, don't mind me.  You're free to chat!"}; //?
+// Add a new message to the list of messages in the data store
     const messages = this.state.messages.concat(newMessage)
-    // Update the state of the app component.
-    // Calling setState will trigger a call to render() in App and all child components.
+//changes state of App and updates children
     this.setState({messages: messages})
   };
 
@@ -64,10 +63,12 @@ class App extends Component {
   _handleKeyPress = evt => {
     const newMessage = {type: "postMessage", username: this.state.currentUser.name, content: evt};
 
-    //send new message to server rather than appending it over
+//send new message to server rather than appending it over
       this.socket.send(JSON.stringify(newMessage), "CLIENT");
   }
 
+
+//handle change even is to notify when a user changes names
   _handleChange = evt => {
     let oldName = this.state.currentUser.name;
     this.setState({currentUser:{name: evt}});
